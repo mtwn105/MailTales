@@ -1,3 +1,5 @@
+"use client";
+
 import {
   NavbarBrand,
   NavbarContent,
@@ -7,30 +9,29 @@ import {
 import { link as linkStyles } from "@nextui-org/theme";
 import clsx from "clsx";
 import NextLink from "next/link";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 import { siteConfig } from "@/config/site";
+import { Button } from "@nextui-org/button";
 
 export const Navbar = () => {
-  // const searchInput = (
-  //   <Input
-  //     aria-label="Search"
-  //     classNames={{
-  //       inputWrapper: "bg-default-100",
-  //       input: "text-sm",
-  //     }}
-  //     endContent={
-  //       <Kbd className="hidden lg:inline-block" keys={["command"]}>
-  //         K
-  //       </Kbd>
-  //     }
-  //     labelPlacement="outside"
-  //     placeholder="Search..."
-  //     startContent={
-  //       <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-  //     }
-  //     type="search"
-  //   />
-  // );
+  // Get Token from  cookie
+  const token = Cookies.get("mailtales_user_token"); // Replace 'auth-token' with the name of your cookie
+  const email = Cookies.get("mailtales_user_email"); // Replace 'auth-token' with the name of your cookie
+
+  // show or hide a button  based on the token react
+  const [showButton, setShowButton] = useState(false);
+
+  useEffect(() => {
+    if (token) {
+      setShowButton(true);
+    } else {
+      setShowButton(false);
+    }
+  }, [token]);
+
+  useEffect(() => {}, [token]);
 
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
@@ -88,6 +89,16 @@ export const Navbar = () => {
             Sponsor
           </Button>
         </NavbarItem> */}
+        <NavbarItem>
+          {showButton ? (
+            <div className="flex justify-center items-center">
+              <p className="mr-2">{email}</p>
+              <Button variant="ghost" color="danger">
+                Log Out
+              </Button>
+            </div>
+          ) : null}
+        </NavbarItem>
       </NavbarContent>
 
       {/* <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">

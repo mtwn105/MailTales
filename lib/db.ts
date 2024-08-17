@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const uri = process.env.MONGODB_URI as string; // Ensure this is set in your environment variables
 
@@ -33,20 +33,20 @@ async function connectToDatabase(): Promise<mongoose.Mongoose> {
     isConnecting = false;
 
     // Reconnection logic
-    mongoose.connection.on('disconnected', () => {
-      console.log('Mongoose disconnected, attempting to reconnect...');
+    mongoose.connection.on("disconnected", () => {
+      console.log("Mongoose disconnected, attempting to reconnect...");
       connectToDatabase(); // Attempt reconnection
     });
 
-    mongoose.connection.on('error', (err) => {
-      console.error('Mongoose connection error:', err);
+    mongoose.connection.on("error", (err) => {
+      console.error("Mongoose connection error:", err);
     });
 
     return cachedClient;
   } catch (error) {
     isConnecting = false;
-    console.error('Mongoose connection error:', error);
-    throw new Error('Failed to connect to MongoDB');
+    console.error("Mongoose connection error:", error);
+    throw new Error("Failed to connect to MongoDB");
   }
 }
 
