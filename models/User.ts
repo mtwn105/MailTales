@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 export interface User extends mongoose.Document {
   name: string;
+  picture: string;
   email: string;
   grantId: string;
   createdAt: Date;
@@ -11,6 +12,9 @@ export interface User extends mongoose.Document {
 
 const UserSchema = new mongoose.Schema<User>({
   name: {
+    type: String,
+  },
+  picture: {
     type: String,
   },
   email: {

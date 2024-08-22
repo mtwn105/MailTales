@@ -9,8 +9,11 @@
     "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
   },
   "dependencies": {
+    "@nextui-org/avatar": "^2.0.32",
     "@nextui-org/button": "2.0.37",
+    "@nextui-org/card": "^2.0.33",
     "@nextui-org/code": "2.0.32",
+    "@nextui-org/divider": "^2.0.31",
     "@nextui-org/input": "2.2.4",
     "@nextui-org/kbd": "2.0.33",
     "@nextui-org/link": "2.0.34",

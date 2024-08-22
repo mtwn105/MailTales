@@ -2,9 +2,10 @@ import { cookies } from "next/headers";
 import { type NextRequest } from "next/server";
 import Nylas from "nylas";
 
-import connectToDatabase from "../../../../lib/db";
-import User from "../../../../models/User";
-import { signToken } from "../../../../lib/jwt";
+import connectToDatabase from "@/lib/db";
+import User from "@/models/User";
+import { signToken, decodeNylasToken } from "@/lib/jwt";
+
 const nylas = new Nylas({
   apiKey: process.env.NYLAS_API_KEY!,
   apiUri: process.env.NYLAS_API_URI!,
@@ -19,12 +20,10 @@ export async function GET(request: Request & NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get("code") as string;
 
-  const { grantId, email } = await nylas.auth.exchangeCodeForToken({
-    // clientSecret: process.env.NYLAS_API_KEY,
+  const { grantId, email, idToken } = await nylas.auth.exchangeCodeForToken({
     clientId: process.env.NYLAS_CLIENT_ID!,
     code,
     redirectUri: process.env.NYLAS_REDIRECT_URI!,
-    // @ts-ignore
     codeVerifier: secret,
   });
 
@@ -37,9 +36,19 @@ export async function GET(request: Request & NextRequest) {
 
   let user = await User.findOne({ email });
 
+  console.log("ID Token", idToken);
+
+  let userDetails = null;
+
+  if (idToken) {
+    userDetails = decodeNylasToken(idToken);
+  }
+
   if (!user) {
     // Create new user
     user = await User.create({
+      name: userDetails?.name,
+      picture: userDetails?.picture,
       email,
       grantId,
       lastLogin: new Date(),
@@ -50,6 +59,8 @@ export async function GET(request: Request & NextRequest) {
     user = await User.findOneAndUpdate(
       { email },
       {
+        name: userDetails?.name,
+        picture: userDetails?.picture,
         grantId,
         lastLogin: new Date(),
       },
@@ -64,9 +75,13 @@ export async function GET(request: Request & NextRequest) {
   const token = signToken({
     id: user._id,
     email,
+    name: user.name,
+    picture: user.picture,
   });
 
   cookieStore.set("mailtales_user_token", token);
+  console.log("User set", JSON.stringify(user));
+  cookieStore.set("mailtales_user_details", JSON.stringify(user));
   console.log("Token set");
 
   // Redirect to success page

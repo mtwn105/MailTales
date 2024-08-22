@@ -10,28 +10,40 @@ import { link as linkStyles } from "@nextui-org/theme";
 import clsx from "clsx";
 import NextLink from "next/link";
 import { useEffect, useState } from "react";
+import { Button } from "@nextui-org/button";
+import { Avatar } from "@nextui-org/avatar";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 import { siteConfig } from "@/config/site";
-import { Button } from "@nextui-org/button";
-
+import { User } from "@/models/User";
+// import { User } from "@/models/User";
 export const Navbar = () => {
-  // Get Token from  cookie
-  const token = Cookies.get("mailtales_user_token"); // Replace 'auth-token' with the name of your cookie
-  const email = Cookies.get("mailtales_user_email"); // Replace 'auth-token' with the name of your cookie
+  const router = useRouter();
 
-  // show or hide a button  based on the token react
-  const [showButton, setShowButton] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    if (token) {
-      setShowButton(true);
-    } else {
-      setShowButton(false);
-    }
-  }, [token]);
+    const userDetails = Cookies.get("mailtales_user_details");
 
-  useEffect(() => {}, [token]);
+    if (userDetails) {
+      const user = JSON.parse(userDetails);
+
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    Cookies.remove("mailtales_user_token");
+    Cookies.remove("mailtales_user_email");
+    Cookies.remove("mailtales_user_details");
+    router.push("/sign-up");
+    setUser(null);
+  };
 
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
@@ -48,7 +60,7 @@ export const Navbar = () => {
               <NextLink
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium"
+                  "data-[active=true]:text-primary data-[active=true]:font-medium",
                 )}
                 color="foreground"
                 href={item.href}
@@ -64,36 +76,21 @@ export const Navbar = () => {
         className="hidden sm:flex basis-1/5 sm:basis-full"
         justify="end"
       >
-        {/* <NavbarItem className="hidden sm:flex gap-2">
-          <Link isExternal aria-label="Twitter" href={siteConfig.links.twitter}>
-            <TwitterIcon className="text-default-500" />
-          </Link>
-          <Link isExternal aria-label="Discord" href={siteConfig.links.discord}>
-            <DiscordIcon className="text-default-500" />
-          </Link>
-          <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-            <GithubIcon className="text-default-500" />
-          </Link>
-          <ThemeSwitch />
-        </NavbarItem> */}
-        {/* <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-        <NavbarItem className="hidden md:flex">
-          <Button
-            isExternal
-            as={Link}
-            className="text-sm font-normal text-default-600 bg-default-100"
-            href={siteConfig.links.sponsor}
-            startContent={<HeartFilledIcon className="text-danger" />}
-            variant="flat"
-          >
-            Sponsor
-          </Button>
-        </NavbarItem> */}
         <NavbarItem>
-          {showButton ? (
+          {user ? (
             <div className="flex justify-center items-center">
-              <p className="mr-2">{email}</p>
-              <Button variant="ghost" color="danger">
+              {user?.picture ? (
+                <Avatar
+                  showFallback
+                  className="mr-2"
+                  color="primary"
+                  name={user?.name}
+                  src={user?.picture}
+                />
+              ) : (
+                <Avatar className="mr-2" color="primary" name={user?.name} />
+              )}
+              <Button color="danger" variant="ghost" onClick={handleLogout}>
                 Log Out
               </Button>
             </div>

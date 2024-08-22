@@ -1,18 +1,14 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import Nylas from "nylas";
 
 import connectToDatabase from "@/lib/db";
 import { verifyToken } from "@/lib/jwt";
 import User from "@/models/User";
 
-const nylas = new Nylas({
-  apiKey: process.env.NYLAS_API_KEY!,
-  apiUri: process.env.NYLAS_API_URI!,
-});
+// console.log(nylas);
 
 export async function GET(
-  request: Request & NextRequest,
+  _request: Request & NextRequest,
 ): Promise<NextResponse> {
   try {
     const cookieStore = cookies();
@@ -39,26 +35,12 @@ export async function GET(
       return new NextResponse(null, { status: 401 });
     }
 
-    // Get GrantId
-    const grantId = user.grantId;
-
-    console.log("GrantId:", grantId);
-
-    const messages = await nylas.messages.list({
-      identifier: grantId!,
-      queryParams: {
-        limit: 5,
-      },
-    });
-
-    // console.log("Recent Messages:", messages);
-
-    return NextResponse.json(messages);
+    return NextResponse.json(user);
   } catch (error) {
-    console.error("Error fetching emails:", error);
+    console.error("Error fetching user details:", error);
 
     return NextResponse.json(
-      { error: "Error fetching emails" },
+      { error: "Error fetching user details" },
       { status: 500 },
     );
   }
