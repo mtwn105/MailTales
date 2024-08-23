@@ -23,7 +23,7 @@ export const EmailCard = (props: any) => {
         <div className="">
           <p className="text-md font-bold">{email?.subject}</p>
           <p className="text-small text-default-500">
-            From: <span className="text-primary">{email?.from[0]?.email}</span>
+            From: <span className="text-primary">{email?.from}</span>
           </p>
         </div>
       </CardHeader>

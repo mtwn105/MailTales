@@ -60,7 +60,7 @@ export const Navbar = () => {
               <NextLink
                 className={clsx(
                   linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium",
+                  "data-[active=true]:text-primary data-[active=true]:font-medium"
                 )}
                 color="foreground"
                 href={item.href}
@@ -90,6 +90,7 @@ export const Navbar = () => {
               ) : (
                 <Avatar className="mr-2" color="primary" name={user?.name} />
               )}
+              <p className="text-sm  mr-2">{user?.name}</p>
               <Button color="danger" variant="ghost" onClick={handleLogout}>
                 Log Out
               </Button>

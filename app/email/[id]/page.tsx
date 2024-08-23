@@ -43,7 +43,7 @@ export default function EmailDisplay({ params }: { params: { id: string } }) {
   }
 
   return (
-    <Card className="w-full max-w-3xl mx-auto mt-2">
+    <Card className="w-full mx-auto mt-2">
       <CardHeader className="flex flex-col items-start">
         <h1 className="text-2xl font-bold mb-2">{email.subject}</h1>
         <p className="text-sm text-default-500">

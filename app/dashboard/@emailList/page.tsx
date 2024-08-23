@@ -23,7 +23,7 @@ export default function EmailList() {
     })
       .then((res) => res?.json())
       .then((data) => {
-        setData(data?.data);
+        setData(data);
         setPageToken(data?.nextCursor);
         setLoading(false);
       });
@@ -40,8 +40,8 @@ export default function EmailList() {
     })
       .then((res) => res?.json())
       .then((data) => {
-        data.data = [...currentData, ...data.data];
-        setData(data.data);
+        data = [...currentData, ...data];
+        setData(data);
         setPageToken(data?.nextCursor);
         setLoading(false);
       });
@@ -68,7 +68,6 @@ export default function EmailList() {
               // </div>
               <EmailCard key={index} email={item} />
             ))}
-
 
             <Button onClick={() => nextPage(data, pageToken)}>Load More</Button>
           </div>
