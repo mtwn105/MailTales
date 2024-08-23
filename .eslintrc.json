@@ -9,7 +9,9 @@
     "plugin:react/recommended",
     "plugin:prettier/recommended",
     "plugin:react-hooks/recommended",
-    "plugin:jsx-a11y/recommended"
+    "plugin:jsx-a11y/recommended",
+    "eslint:recommended",
+    "next"
   ],
   "plugins": [
     "react",
@@ -17,7 +19,8 @@
     "import",
     "@typescript-eslint",
     "jsx-a11y",
-    "prettier"
+    "prettier",
+    "plugin:@next/next/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

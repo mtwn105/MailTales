@@ -1,8 +1,9 @@
-"use client";
+// "use client";
 
-import { EmailCard } from "@/components/email-card";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+// import { EmailCard } from "@/components/email-card";
+// import { useRouter } from "next/navigation";
+// import { useState, useEffect } from "react";
+// import {Spinner} from "@nextui-org/spinner";
 
 // async function getData() {
 
@@ -23,45 +24,32 @@ import { useState, useEffect } from "react";
 // }
 
 export default function Dashboard() {
-  const [data, setData] = useState<any>(null);
-  // const router = useRouter();
+  // const [data, setData] = useState<any>(null);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // // const router = useRouter();
 
-  useEffect(() => {
-  //     try {
-  // const data = await getData();
-
-  //   } catch (error) {
-  //       console.log(error);
-  //       router.push("/sign-up");
-  //     }
-
-    fetch("/api/email/recent", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      next: { revalidate: 60 }, // Cache revalidation
-    })
-      .then((res) => res?.json())
-      .then((data) => setData(data));
-  }, []);
+  // useEffect(() => {
+  //   fetch("/api/email/recent", {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     credentials: "include",
+  //     next: { revalidate: 60 }, // Cache revalidation
+  //   })
+  //     .then((res) => res?.json())
+  //     .then((data) => {
+  //       setData(data);
+  //       setLoading(false);
+  //     });
+  // }, []);
 
 
   return (
-    <main>
       <div className="w-full mx-auto ">
         <p className="fade-in-up text-4xl sm:text-5xl font-bold relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-500 pb-8 animate-fade-in">
           Dashboard
         </p>
-        {/* loop over data and display it */}
-        {data?.data?.map((item: any, index: number) => (
-          // <div>
-          // <p key={item.id}>{JSON.stringify(item)}</p>
-          // </div>
-          <EmailCard key={index} email={item} />
-        ))}
-      </div>
-    </main>
+       </div>
   );
 }

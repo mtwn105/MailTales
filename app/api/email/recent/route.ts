@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import Nylas from "nylas";
+import Nylas, { type ListMessagesQueryParams } from "nylas";
 
 import connectToDatabase from "@/lib/db";
 import { verifyToken } from "@/lib/jwt";
@@ -44,11 +44,20 @@ export async function GET(
 
     console.log("GrantId:", grantId);
 
+
+    const queryParams: ListMessagesQueryParams = {
+      in: ["INBOX"],
+      limit: 5,
+    }
+    const pageToken = request.nextUrl.searchParams.get("pageToken");
+
+    if (pageToken && pageToken.length > 0) {
+      queryParams.pageToken = pageToken;
+    }
+
     const messages = await nylas.messages.list({
       identifier: grantId!,
-      queryParams: {
-        limit: 5,
-      },
+      queryParams,
     });
 
     // console.log("Recent Messages:", messages);

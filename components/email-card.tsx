@@ -1,18 +1,27 @@
+"use client";
+
 import { Card, CardHeader, CardBody } from "@nextui-org/card";
 import { Divider } from "@nextui-org/divider";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export const EmailCard = (props: any) => {
   const { email } = props;
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(`/dashboard/email/${email?.id}`);
+  };
 
   return (
     <div className="m-2">
-      <Card isHoverable className="w-full mb-4">
+      <Card isHoverable className="w-full mb-4 cursor-pointer" onClick={handleClick}>
         <CardHeader className="flex gap-3">
           <div className="">
-            <p className="text-md">{email?.subject}</p>
+            <p className="text-md font-bold">{email?.subject}</p>
             <p className="text-small text-default-500">
               From:{" "}
-                <span >{email?.from[0]?.email}</span>
+                <span className="text-primary">{email?.from[0]?.email}</span>
             </p>
           </div>
         </CardHeader>
