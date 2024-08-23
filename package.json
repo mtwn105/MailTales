@@ -28,8 +28,10 @@
     "@react-aria/visually-hidden": "3.8.12",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "dompurify": "^3.1.6",
     "dotenv": "^16.4.5",
     "framer-motion": "^11.3.28",
+    "html-to-text": "^9.0.5",
     "intl-messageformat": "^10.5.0",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
@@ -45,6 +47,8 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@types/dompurify": "^3.0.5",
+    "@types/html-to-text": "^9.0.4",
     "@types/js-cookie": "^3.0.6",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/mongoose": "^5.11.96",

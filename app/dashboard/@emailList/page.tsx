@@ -49,6 +49,7 @@ export default function EmailList() {
 
   return (
     <main>
+      <p className="text-2xl font-bold">Latest Emails</p>
       <div className="w-full mx-auto ">
         {loading ? (
           <div className="flex justify-center items-center mt-4">

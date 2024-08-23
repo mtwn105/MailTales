@@ -60,9 +60,19 @@ export async function GET(
       queryParams,
     });
 
+    const response = messages.data.map((message) => {
+      return {
+        id: message.id,
+        subject: message.subject,
+        from: message?.from?.[0]?.email,
+        snippet: message?.snippet,
+        date: message?.date,
+      }
+    })
+
     // console.log("Recent Messages:", messages);
 
-    return NextResponse.json(messages);
+    return NextResponse.json(response);
   } catch (error) {
     console.error("Error fetching emails:", error);
 
