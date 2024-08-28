@@ -1,8 +1,10 @@
 export const LoadingSpinner = ({ message }: { message: string }) => {
   return (
-    <div className="flex justify-center items-center mt-4">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      <p className="mt-4 text-sm text-muted-foreground">{message}</p>
+    <div className="flex flex-col items-center">
+      <div className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent"></div>
+      {message && (
+        <p className="mt-2 text-lg text-muted-foreground">{message}</p>
+      )}
     </div>
   );
 };

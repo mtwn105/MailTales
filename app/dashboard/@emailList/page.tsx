@@ -3,12 +3,14 @@
 import { EmailCard } from "@/components/email-card";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/spinner";
+import { Loader2 } from "lucide-react";
 
 import { useState, useEffect } from "react";
 
 export default function EmailList() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingLoadMore, setLoadingLoadMore] = useState<boolean>(false);
   const [pageToken, setPageToken] = useState<string>("");
 
   useEffect(() => {
@@ -24,11 +26,14 @@ export default function EmailList() {
       .then((data) => {
         setData(data?.data);
         setPageToken(data?.nextCursor);
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, []);
 
   const nextPage = (currentData: any, pageToken: string) => {
+    setLoadingLoadMore(true);
     fetch(`/api/email/recent?pageToken=${pageToken}`, {
       method: "GET",
       headers: {
@@ -39,16 +44,17 @@ export default function EmailList() {
     })
       .then((res) => res?.json())
       .then((data) => {
-        data = [...currentData, ...data.data];
-        setData(data);
         setPageToken(data?.nextCursor);
-        setLoading(false);
+        setData([...currentData, ...data.data]);
+      })
+      .finally(() => {
+        setLoadingLoadMore(false);
       });
   };
 
   return (
     <main>
-      <p className="text-2xl font-bold">Latest Emails</p>
+      <p className="text-2xl sm:text-4xl font-bold">Latest Emails</p>
       <div className="w-full mx-auto ">
         {loading ? (
           <LoadingSpinner message="Fetching your latest emails..." />
@@ -61,8 +67,16 @@ export default function EmailList() {
               // </div>
               <EmailCard key={index} email={item} />
             ))}
-
-            <Button onClick={() => nextPage(data, pageToken)}>Load More</Button>
+            {loadingLoadMore ? (
+              <LoadingSpinner message="Loading more emails..." />
+            ) : (
+              <Button
+                disabled={loadingLoadMore}
+                onClick={() => nextPage(data, pageToken)}
+              >
+                Load More
+              </Button>
+            )}
           </div>
         )}
       </div>

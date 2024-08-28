@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -15,15 +15,23 @@ export const EmailCard = (props: any) => {
   return (
     <Card
       onClick={handleClick}
-      className="w-full my-4 cursor-pointer hover:bg-gray-100"
+      className="w-full my-4 cursor-pointer bg-background border-b hover:bg-accent"
     >
       <CardHeader className="flex gap-3">
-        <div className="">
-          <p className="text-md font-bold">{email?.subject}</p>
-          <p className="text-small text-default-500">From: {email?.from}</p>
+        <div className="flex flex-col">
+          <p className="text-sm font-bold mb-2">Subject: {email?.subject}</p>
+          <p className="text-sm font-bold text-muted-foreground">
+            From: {email?.from}
+          </p>
         </div>
       </CardHeader>
-      {email?.snippet ? <CardContent>{email?.snippet}</CardContent> : null}
+      {email?.snippet ? (
+        <CardContent className="text-sm text-muted-foreground">
+          {email?.snippet?.length > 140
+            ? `${email?.snippet?.substring(0, 140)}...`
+            : email?.snippet}
+        </CardContent>
+      ) : null}
     </Card>
   );
 };

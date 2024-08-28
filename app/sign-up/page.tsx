@@ -1,5 +1,6 @@
 "use client";
 
+import { BackgroundBeams } from "@/components/ui/background-beams";
 import { Button } from "@/components/ui/button";
 import { GoogleSignUpButton } from "@/components/ui/google-button";
 
@@ -37,6 +38,7 @@ export default function SignUp() {
 
   return (
     <main>
+      <BackgroundBeams className="-z-10" />
       <div className="w-full mx-auto text-center">
         <p className="fade-in-up text-4xl sm:text-5xl font-bold relative z-20 bg-clip-text py-8 animate-fade-in">
           Get Started with MailTales
