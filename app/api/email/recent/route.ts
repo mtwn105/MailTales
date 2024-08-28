@@ -72,7 +72,10 @@ export async function GET(
 
     // console.log("Recent Messages:", messages);
 
-    return NextResponse.json(response);
+    return NextResponse.json({
+      data: response,
+      nextCursor: messages.nextCursor,
+    });
   } catch (error) {
     console.error("Error fetching emails:", error);
 

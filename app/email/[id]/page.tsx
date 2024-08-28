@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardHeader, CardBody } from "@nextui-org/card";
-import { Divider } from "@nextui-org/divider";
-import { Spinner } from "@nextui-org/spinner";
 import { sanitizeHTML } from "@/lib/utils";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { LoadingSpinner } from "@/components/ui/spinner";
 
 export default function EmailDisplay({ params }: { params: { id: string } }) {
   const [email, setEmail] = useState<any>(null);
@@ -33,7 +32,7 @@ export default function EmailDisplay({ params }: { params: { id: string } }) {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <Spinner size="lg" color="primary" label="Loading email..." />
+        <LoadingSpinner message="Loading email..." />
       </div>
     );
   }
@@ -46,20 +45,16 @@ export default function EmailDisplay({ params }: { params: { id: string } }) {
     <Card className="w-full mx-auto mt-2">
       <CardHeader className="flex flex-col items-start">
         <h1 className="text-2xl font-bold mb-2">{email.subject}</h1>
-        <p className="text-sm text-default-500">
-          From: <span className="text-primary">{email.from[0]?.email}</span>
-        </p>
-        <p className="text-sm text-default-500">
-          To: <span className="text-primary">{email.to[0]?.email}</span>
-        </p>
+        <p className="text-sm text-default-500">From: {email.from}</p>
+        <p className="text-sm text-default-500">To: {email.to}</p>
         <p className="text-sm text-default-500">
           Date: {new Date(email.date).toLocaleString()}
         </p>
       </CardHeader>
-      <Divider />
-      <CardBody>
+
+      <CardContent>
         <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(email.body) }} />
-      </CardBody>
+      </CardContent>
     </Card>
   );
 }

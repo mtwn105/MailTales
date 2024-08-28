@@ -1,11 +1,10 @@
 "use client";
 
 import { EmailCard } from "@/components/email-card";
+import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/spinner";
 
 import { useState, useEffect } from "react";
-import { Spinner } from "@nextui-org/spinner";
-
-import { Button } from "@nextui-org/button";
 
 export default function EmailList() {
   const [data, setData] = useState<any>(null);
@@ -23,7 +22,7 @@ export default function EmailList() {
     })
       .then((res) => res?.json())
       .then((data) => {
-        setData(data);
+        setData(data?.data);
         setPageToken(data?.nextCursor);
         setLoading(false);
       });
@@ -40,7 +39,7 @@ export default function EmailList() {
     })
       .then((res) => res?.json())
       .then((data) => {
-        data = [...currentData, ...data];
+        data = [...currentData, ...data.data];
         setData(data);
         setPageToken(data?.nextCursor);
         setLoading(false);
@@ -52,13 +51,7 @@ export default function EmailList() {
       <p className="text-2xl font-bold">Latest Emails</p>
       <div className="w-full mx-auto ">
         {loading ? (
-          <div className="flex justify-center items-center mt-4">
-            <Spinner
-              size="lg"
-              color="primary"
-              label="Fetching your latest emails..."
-            />
-          </div>
+          <LoadingSpinner message="Fetching your latest emails..." />
         ) : (
           <div>
             {/* loop over data and display it */}
