@@ -15,16 +15,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/sign-up', request.url));
   }
 
-  // Check if the token is valid
-  const decoded = await verifyToken(token?.value!);
-  if (!decoded) {
-    console.log("Token is invalid");
-    // clear the cookie
-    const response = NextResponse.redirect(new URL('/sign-up', request.url));
-    response.cookies.delete('mailtales_user_token');
-    response.cookies.delete('mailtales_user_details');
-    response.cookies.delete('mailtales_user_email');
-    return response;
+  if (token) {
+    // Check if the token is valid
+    const decoded = await verifyToken(token?.value!);
+    if (!decoded) {
+      console.log("Token is invalid");
+      // clear the cookie
+      const response = NextResponse.redirect(new URL('/sign-up', request.url));
+      response.cookies.delete('mailtales_user_token');
+      response.cookies.delete('mailtales_user_details');
+      response.cookies.delete('mailtales_user_email');
+      return response;
+    }
   }
 
   return NextResponse.next();
@@ -38,7 +40,9 @@ async function verifyToken(token: string) {
       method: 'POST',
       body: JSON.stringify({ token }),
     });
-    return res.json();
+    const data = await res.json();
+    // console.log("Token verification response:", data);
+    return data;
   } catch (error) {
     console.error("Error verifying token:", error);
     return null;
