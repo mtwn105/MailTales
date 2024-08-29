@@ -3,6 +3,8 @@
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { Button } from "@/components/ui/button";
 import { GoogleSignUpButton } from "@/components/ui/google-button";
+import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight";
+import { motion } from "framer-motion";
 
 // import React, { useState } from "react";
 export default function SignUp() {
@@ -38,15 +40,28 @@ export default function SignUp() {
 
   return (
     <main>
-      <BackgroundBeams className="-z-10" />
-      <div className="w-full mx-auto text-center">
-        <p className="fade-in-up text-4xl sm:text-5xl font-bold relative z-20 bg-clip-text py-8 animate-fade-in">
+      <HeroHighlight className="text-center">
+        <motion.h1
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: 1,
+            y: [20, -5, 0],
+          }}
+          transition={{
+            duration: 0.5,
+            ease: [0.4, 0.0, 0.2, 1],
+          }}
+          className="text-4xl px-4  lg:text-6xl font-bold  max-w-4xl leading-relaxed lg:leading-snug text-center mx-auto "
+        >
           Get Started with MailTales
-        </p>
-        <GoogleSignUpButton onClick={authStart} />
-        {/* <span>Aceternity UI</span> */}
-        {/* </HoverBorderGradient> */}
-      </div>
+        </motion.h1>
+        <div className="mt-6">
+          <GoogleSignUpButton onClick={authStart} />
+        </div>
+      </HeroHighlight>
     </main>
   );
 }

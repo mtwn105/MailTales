@@ -2,6 +2,8 @@
 
 import { EmailCard } from "@/components/email-card";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { LoadingSpinner } from "@/components/ui/spinner";
 import { Loader2 } from "lucide-react";
 
@@ -57,14 +59,20 @@ export default function EmailList() {
       <p className="text-2xl sm:text-4xl font-bold">Latest Emails</p>
       <div className="w-full mx-auto ">
         {loading ? (
-          <LoadingSpinner message="Fetching your latest emails..." />
+          <div className="flex flex-col gap-4 mt-4">
+            {[...Array(4)].map((_, index) => (
+              <Card key={index} className="w-full h-36 p-4 mb-4">
+                <Skeleton className="w-full h-12 " />
+                <Skeleton className="w-full h-4 mt-2" />
+                <Skeleton className="w-[80%] h-4 mt-2" />
+              </Card>
+            ))}
+          </div>
         ) : (
           <div>
             {/* loop over data and display it */}
             {data?.map((item: any, index: number) => (
-              // <div>
-              // <p key={item.id}>{JSON.stringify(item)}</p>
-              // </div>
+
               <EmailCard key={index} email={item} />
             ))}
             {loadingLoadMore ? (

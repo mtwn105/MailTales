@@ -2,7 +2,8 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import Nylas from "nylas";
 
-import { getResponse } from "@/lib/ai";
+import { getGoogleResponse, getGoogleResponseObject } from "@/lib/ai";
+import { z } from "zod";
 
 const nylas = new Nylas({
   apiKey: process.env.NYLAS_API_KEY!,
@@ -11,11 +12,12 @@ const nylas = new Nylas({
 
 export const maxDuration = 60;
 
-export async function GET(
-  _request: NextRequest,
+export async function POST(
+  request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<NextResponse> {
   try {
+
     const cookieStore = cookies();
 
     const userDetails = JSON.parse(cookieStore.get("mailtales_user_details")?.value!);
@@ -34,36 +36,28 @@ export async function GET(
       return NextResponse.json({ error: "Email not found" }, { status: 404 });
     }
 
+    const { body } = await request.json();
+
     console.log("Going to get response from AI");
 
-    // const aiResponse = await getResponse({
-    //   messages: [
-    //     {
-    //       role: "system",
-    //       content: "Extract the plain text content from the email and provide it as-is, without any introductory or concluding statements.",
-    //     },
-    //     {
-    //       role: "user",
-    //       content: message.data.body,
-    //     },
-    //   ],
-    // });
-
-
-    // if (!aiResponse?.result?.response) {
-    //   return NextResponse.json({ error: "Error fetching email" }, { status: 500 });
-    // }
-
-    // const textBody = aiResponse?.result?.response;
-
-    return NextResponse.json({
-      id: message.data.id,
-      subject: message.data.subject,
-      from: message.data.from?.[0]?.email,
-      to: message.data.to?.[0]?.email,
-      date: message.data.date,
-      body: message.data.body,
-      // cleanBody: textBody,
+    const aiResponse = await getGoogleResponseObject([
+      {
+        role: "system",
+        content: "Perform sentiment analysis on the email body and provide a score between 0 and 100. 0 is negative and 100 is positive.",
+      },
+      {
+        role: "user",
+        content: `Email Body: ${body}`,
+      },
+    ],
+      z.object({
+        sentiment: z.number(),
+      })
+    );
+    const response = aiResponse.toJsonResponse();
+    return new NextResponse(response.body, {
+      status: response.status,
+      headers: response.headers,
     });
   } catch (error) {
     console.error("Error fetching email:", error);

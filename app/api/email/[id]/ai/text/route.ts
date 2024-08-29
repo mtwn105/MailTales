@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import Nylas from "nylas";
 
-import { getResponse } from "@/lib/ai";
+import { getGoogleResponse } from "@/lib/ai";
 
 const nylas = new Nylas({
   apiKey: process.env.NYLAS_API_KEY!,
@@ -36,19 +36,30 @@ export async function GET(
 
     console.log("Going to get response from AI");
 
-    // const aiResponse = await getResponse({
-    //   messages: [
-    //     {
-    //       role: "system",
-    //       content: "Extract the plain text content from the email and provide it as-is, without any introductory or concluding statements.",
-    //     },
-    //     {
-    //       role: "user",
-    //       content: message.data.body,
-    //     },
-    //   ],
-    // });
+    const aiResponse = await getGoogleResponse([
+      {
+        role: "system",
+        content: "Summarize the email in plain text and provide it as-is, without any introductory or concluding statements. Do not use any markdown formatting. Only provide the summary of the email.",
+      },
+      {
+        role: "user",
+        content: `Subject: ${message.data.subject}\nFrom: ${message.data.from?.[0]?.email}\nTo: ${message.data.to?.[0]?.email}\n Email Body: ${message.data.body}`,
+      },
+    ],
+    );
+    const response = aiResponse.toTextStreamResponse();
+    return new NextResponse(response.body, {
+      status: response.status,
+      headers: response.headers,
+    });
+    // for await (const chunk of aiResponse?.textStream) {
+    //   console.log(chunk);
 
+    // }
+
+    // return NextResponse.json({
+    //   "message": "ok"
+    // });
 
     // if (!aiResponse?.result?.response) {
     //   return NextResponse.json({ error: "Error fetching email" }, { status: 500 });
@@ -56,15 +67,15 @@ export async function GET(
 
     // const textBody = aiResponse?.result?.response;
 
-    return NextResponse.json({
-      id: message.data.id,
-      subject: message.data.subject,
-      from: message.data.from?.[0]?.email,
-      to: message.data.to?.[0]?.email,
-      date: message.data.date,
-      body: message.data.body,
-      // cleanBody: textBody,
-    });
+    // return NextResponse.json({
+    //   id: message.data.id,
+    //   subject: message.data.subject,
+    //   from: message.data.from?.[0]?.email,
+    //   to: message.data.to?.[0]?.email,
+    //   date: message.data.date,
+    //   body: message.data.body,
+    //   // cleanBody: textBody,
+    // });
   } catch (error) {
     console.error("Error fetching email:", error);
     return NextResponse.json(

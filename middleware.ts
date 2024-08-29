@@ -26,6 +26,10 @@ export async function middleware(request: NextRequest) {
       response.cookies.delete('mailtales_user_details');
       response.cookies.delete('mailtales_user_email');
       return response;
+    } else {
+      if (!isProtectedPath) {
+        // return NextResponse.redirect(new URL('/dashboard', request.url));
+      }
     }
   }
 
@@ -50,5 +54,5 @@ async function verifyToken(token: string) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/api/email/:path*', '/email/:path*'],
+  matcher: ['/dashboard/:path*', '/api/email/:path*', '/email/:path*', '/:path*'],
 };
