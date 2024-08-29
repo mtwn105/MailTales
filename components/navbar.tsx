@@ -49,6 +49,22 @@ export const Navbar = () => {
     setUser(null);
   };
 
+  // Rerender the page if cookies are deleted
+  useEffect(() => {
+    const checkToken = () => {
+      const token = Cookies.get("mailtales_user_token");
+      if (!token) {
+        // router.push("/sign-up");
+        setUser(null);
+      }
+    };
+
+    checkToken();
+    const intervalId = setInterval(checkToken, 5000); // Check every 5 seconds
+
+    return () => clearInterval(intervalId);
+  }, [router]);
+
   return (
     <nav className="">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,22 +91,26 @@ export const Navbar = () => {
           </div>
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
-              <span className="text-sm font-medium text-foreground mr-2">
-                {user?.name}
-              </span>
-              <Avatar>
-                <AvatarImage src={user?.picture} alt={user?.name} />
-                <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <Button
-                onClick={handleLogout}
-                variant="destructive"
-                size="icon"
-                className="ml-2"
-              >
-                <LogOut className="h-5 w-5" />
-                <span className="sr-only">Logout</span>
-              </Button>
+              {user && (
+                <>
+                  <span className="text-sm font-medium text-foreground mr-2">
+                    {user?.name}
+                  </span>
+                  <Avatar>
+                    <AvatarImage src={user?.picture} alt={user?.name} />
+                    <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <Button
+                    onClick={handleLogout}
+                    variant="destructive"
+                    size="icon"
+                    className="ml-2"
+                  >
+                    <LogOut className="h-5 w-5" />
+                    <span className="sr-only">Logout</span>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
           <div className="md:hidden flex items-center">
@@ -116,17 +136,22 @@ export const Navbar = () => {
                     </Link>
                   </DropdownMenuItem>
                 ))}
-                <DropdownMenuItem className="flex items-center">
-                  <Avatar className="h-8 w-8 mr-2">
-                    <AvatarImage src={user?.picture} alt={user?.name} />
-                    <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <span>{user?.name}</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Logout</span>
-                </DropdownMenuItem>
+                {user && (
+                  <>
+                    <DropdownMenuItem className="flex items-center">
+                      <Avatar className="h-8 w-8 mr-2">
+                        <AvatarImage src={user?.picture} alt={user?.name} />
+                        <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <span>{user?.name}</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Logout</span>
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

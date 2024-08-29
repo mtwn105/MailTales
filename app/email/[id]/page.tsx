@@ -19,7 +19,7 @@ export default function EmailDisplay({ params }: { params: { id: string } }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Email data:");
+        console.log("Email data:", data);
         setEmail(data);
         setLoading(false);
       })
@@ -53,7 +53,9 @@ export default function EmailDisplay({ params }: { params: { id: string } }) {
       </CardHeader>
 
       <CardContent>
-        <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(email.body) }} />
+        {email?.body
+          ?.split("\n")
+          .map((line: string, index: number) => <p key={index}>{line}</p>)}
       </CardContent>
     </Card>
   );

@@ -5,6 +5,7 @@ import Nylas from "nylas";
 import connectToDatabase from "@/lib/db";
 import { verifyToken } from "@/lib/jwt";
 import User from "@/models/User";
+import { getResponse } from "@/lib/ai";
 
 const nylas = new Nylas({
   apiKey: process.env.NYLAS_API_KEY!,
@@ -12,27 +13,15 @@ const nylas = new Nylas({
 });
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ): Promise<NextResponse> {
   try {
     const cookieStore = cookies();
-    const decoded = verifyToken(
-      cookieStore.get("mailtales_user_token")?.value!
-    );
 
-    if (!decoded) {
-      return new NextResponse(null, { status: 401 });
-    }
+    const userDetails = JSON.parse(cookieStore.get("mailtales_user_details")?.value!);
 
-    await connectToDatabase();
-    const user = await User.findById(decoded.id);
-
-    if (!user) {
-      return new NextResponse(null, { status: 401 });
-    }
-
-    const grantId = user.grantId;
+    const grantId = userDetails.grantId;
     const emailId = params.id;
 
     const message = await nylas.messages.find({
@@ -40,11 +29,31 @@ export async function GET(
       messageId: emailId,
     });
 
-    console.log("Found email:", message);
+    // console.log("Found email:", message);
 
     if (!message.data.body) {
       return NextResponse.json({ error: "Email not found" }, { status: 404 });
     }
+
+    const aiResponse = await getResponse({
+      messages: [
+        {
+          role: "system",
+          content: "Extract the plain text content from the email and provide it as-is, without any introductory or concluding statements.",
+        },
+        {
+          role: "user",
+          content: message.data.body,
+        },
+      ],
+    });
+
+
+    if (!aiResponse?.result?.response) {
+      return NextResponse.json({ error: "Error fetching email" }, { status: 500 });
+    }
+
+    const textBody = aiResponse?.result?.response;
 
     return NextResponse.json({
       id: message.data.id,
@@ -52,7 +61,7 @@ export async function GET(
       from: message.data.from?.[0]?.email,
       to: message.data.to?.[0]?.email,
       date: message.data.date,
-      body: message.data.body,
+      body: textBody,
     });
   } catch (error) {
     console.error("Error fetching email:", error);
