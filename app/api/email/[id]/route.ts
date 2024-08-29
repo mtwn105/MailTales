@@ -2,8 +2,6 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import Nylas from "nylas";
 
-import { getResponse } from "@/lib/ai";
-
 const nylas = new Nylas({
   apiKey: process.env.NYLAS_API_KEY!,
   apiUri: process.env.NYLAS_API_URI!,
