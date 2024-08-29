@@ -8,7 +8,7 @@ import { useChat } from 'ai/react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowLeftIcon, BellIcon, BrainCircuit, BrainCircuitIcon, BriefcaseIcon, CalendarIcon, CircleHelpIcon, ClipboardIcon, CreditCardIcon, FrownIcon, HandshakeIcon, MailIcon, MegaphoneIcon, MehIcon, SmileIcon, TagIcon, UserIcon, UsersIcon } from "lucide-react";
 
 export default function EmailDisplay({ params }: { params: { id: string } }) {
   const [email, setEmail] = useState<any>(null);
@@ -162,6 +162,17 @@ export default function EmailDisplay({ params }: { params: { id: string } }) {
                 {/* 'Work', 'Personal', 'Social', 'Marketing', 'Transactional', 'Event Invitation', 'Welcome Email', 'Survey', 'Notification', 'Customer Support', 'Other'  */}
                 {category ? (
                   <div className="px-2 py-2 rounded-md font-semibold inline-block bg-blue-100 text-blue-800">
+                    {category === 'Work' && <BriefcaseIcon className="inline-block w-4 h-4 mr-1" />}
+                    {category === 'Personal' && <UserIcon className="inline-block w-4 h-4 mr-1" />}
+                    {category === 'Social' && <UsersIcon className="inline-block w-4 h-4 mr-1" />}
+                    {category === 'Marketing' && <MegaphoneIcon className="inline-block w-4 h-4 mr-1" />}
+                    {category === 'Transactional' && <CreditCardIcon className="inline-block w-4 h-4 mr-1" />}
+                    {category === 'Event Invitation' && <CalendarIcon className="inline-block w-4 h-4 mr-1" />}
+                    {category === 'Welcome Email' && <HandshakeIcon className="inline-block w-4 h-4 mr-1" />}
+                    {category === 'Survey' && <ClipboardIcon className="inline-block w-4 h-4 mr-1" />}
+                    {category === 'Notification' && <BellIcon className="inline-block w-4 h-4 mr-1" />}
+                    {category === 'Customer Support' && <CircleHelpIcon className="inline-block w-4 h-4 mr-1" />}
+                    {category === 'Other' && <TagIcon className="inline-block w-4 h-4 mr-1" />}
                     {category}
                   </div>
                 ) : null}
@@ -179,10 +190,10 @@ export default function EmailDisplay({ params }: { params: { id: string } }) {
               }`}
             >
               {sentiment >= 0 && sentiment <= 33
-                ? 'Negative'
+                ? <><FrownIcon className="inline-block w-4 h-4 mr-1" />Negative</>
                 : sentiment >= 34 && sentiment <= 66
-                ? 'Neutral'
-                : 'Positive'}
+                ? <><MehIcon className="inline-block w-4 h-4 mr-1" />Neutral</>
+                : <><SmileIcon className="inline-block w-4 h-4 mr-1" />Positive</>}
               {/* <span className="ml-1 text-xs">
                 ({sentiment}%)
               </span> */}
@@ -203,8 +214,8 @@ export default function EmailDisplay({ params }: { params: { id: string } }) {
       <CardContent>
         <Tabs defaultValue="ai">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="ai">AI Summary</TabsTrigger>
-            <TabsTrigger value="original">Original Email</TabsTrigger>
+            <TabsTrigger value="ai"><BrainCircuitIcon className="w-4 h-4 mr-1" /> AI Summary</TabsTrigger>
+            <TabsTrigger value="original"><MailIcon className="w-4 h-4 mr-1" /> Original Email</TabsTrigger>
           </TabsList>
           <TabsContent key="ai" title="AI Summary" value={"ai"}>
             <div className="flex flex-col gap-2 my-2">
