@@ -29,11 +29,13 @@ export async function GET(
       messageId: emailId,
     });
 
-    // console.log("Found email:", message);
+    console.log("Found email");
 
     if (!message.data.body) {
       return NextResponse.json({ error: "Email not found" }, { status: 404 });
     }
+
+    console.log("Going to get response from AI");
 
     const aiResponse = await getResponse({
       messages: [
