@@ -14,11 +14,37 @@ export default function EmailDisplay({ params }: { params: { id: string } }) {
   const [email, setEmail] = useState<any>(null);
   const [aiResponse, setAIResponse] = useState<any>(null);
   const [sentiment, setSentiment] = useState<any>(null);
+  const [category, setCategory] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [aiResponseLoading, setAIResponseLoading] = useState<boolean>(false);
   const [sentimentLoading, setSentimentLoading] = useState<boolean>(false);
-
+  const [categoryLoading, setCategoryLoading] = useState<boolean>(false);
   useEffect(() => {
+
+    const getCategory = async (aiResponse: string) => {
+      try {
+        setCategoryLoading(true);
+        const response = await fetch(`/api/email/${params.id}/ai/categorize`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ body: aiResponse }),
+        });
+
+        if (!response.ok) {
+          console.error("Error fetching category:", response.statusText);
+        }
+
+        const data = await response.json();
+        setCategory(data.category);
+      } catch (error) {
+        console.error("Error fetching category:", error);
+      } finally {
+        setCategoryLoading(false);
+      }
+    };
 
     const getSentiment = async (aiResponse: string) => {
       try {
@@ -74,6 +100,7 @@ export default function EmailDisplay({ params }: { params: { id: string } }) {
           setAIResponse(accumulatedResponse);
         }
         getSentiment(accumulatedResponse);
+        getCategory(accumulatedResponse);
       } catch (error) {
         console.error("Error fetching AI response:", error);
       } finally {
@@ -130,6 +157,15 @@ export default function EmailDisplay({ params }: { params: { id: string } }) {
         <CardHeader className="flex flex-col items-start">
           <div className="flex flex-row justify-between w-full">
             <h1 className="text-2xl font-bold mb-2">{email.subject}</h1>
+            <div className="flex flex-row gap-2">
+              <div className="text-sm text-default-500 mt-2">
+                {/* 'Work', 'Personal', 'Social', 'Marketing', 'Transactional', 'Event Invitation', 'Welcome Email', 'Survey', 'Notification', 'Customer Support', 'Other'  */}
+                {category ? (
+                  <div className="px-2 py-2 rounded-md font-semibold inline-block bg-blue-100 text-blue-800">
+                    {category}
+                  </div>
+                ) : null}
+              </div>
             <div className="text-sm text-default-500 mt-2">
           {sentiment ?  (
                 <div
@@ -142,7 +178,7 @@ export default function EmailDisplay({ params }: { params: { id: string } }) {
                   : 'bg-green-100 text-green-800'
               }`}
             >
-              Sentiment: {sentiment >= 0 && sentiment <= 33
+              {sentiment >= 0 && sentiment <= 33
                 ? 'Negative'
                 : sentiment >= 34 && sentiment <= 66
                 ? 'Neutral'
@@ -150,8 +186,10 @@ export default function EmailDisplay({ params }: { params: { id: string } }) {
               {/* <span className="ml-1 text-xs">
                 ({sentiment}%)
               </span> */}
-            </div>
-          ): null}
+                </div>
+
+                ) : null}
+                </div>
         </div>
         </div>
         <p className="text-sm text-default-500">From: {email.from}</p>
