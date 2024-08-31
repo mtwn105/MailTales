@@ -23,6 +23,12 @@ export const EmailCard = (props: any) => {
           <p className="text-sm font-bold mb-2 text-muted-foreground">
             From: {email?.from}
           </p>
+          <p className="text-xs mb-2 text-muted-foreground">
+            Date:{" "}
+            {new Date(email?.date * 1000).toLocaleDateString() +
+              " " +
+              new Date(email?.date * 1000).toLocaleTimeString()}
+          </p>
           {email?.snippet ? (
             <p className="text-sm text-muted-foreground">
               {email?.snippet?.length > 140

@@ -196,10 +196,10 @@ export default function EmailAISummary({
           <p className="text-default-500 my-2 font-semibold text-lg">
             Turn this email into a captivating story
           </p>
-          <div className="flex flex-col sm:flex-row gap-2 items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
-                <p className="text-default-500 my-2 text-sm font-semibold">
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div className="flex flex-col md:flex-row gap-4 items-center">
+              <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+                <p className="text-default-500 my-2 text-base font-semibold">
                   Story Type
                 </p>
                 <Select
@@ -219,7 +219,7 @@ export default function EmailAISummary({
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
+              <div className="flex flex-col md:flex-row items-center gap-2 w-full md:w-auto">
                 <p className="text-default-500 my-2 text-sm font-semibold">
                   Voice
                 </p>
@@ -228,7 +228,7 @@ export default function EmailAISummary({
                   defaultValue="Xb7hH8MSUJpSbSDYk0k2"
                   onValueChange={(value) => setVoice(value)}
                 >
-                  <SelectTrigger className="w-full sm:w-[250px]">
+                  <SelectTrigger className="w-full md:w-[250px]">
                     <SelectValue placeholder="Choose a voice" />
                   </SelectTrigger>
                   <SelectContent>
@@ -241,10 +241,10 @@ export default function EmailAISummary({
                 </Select>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 mt-2 sm:mt-0">
+            <div className="flex flex-col md:flex-row gap-2 mt-2 md:mt-0">
               <Button
                 disabled={storyLoading}
-                className="w-full sm:w-auto"
+                className="w-full md:w-auto"
                 onClick={() =>
                   generateStory({
                     body: aiResponse,
@@ -257,7 +257,7 @@ export default function EmailAISummary({
               </Button>
               <Button
                 disabled={storyLoading}
-                className="w-full sm:w-auto"
+                className="w-full md:w-auto"
                 variant="outline"
                 onClick={() => surpriseMe(aiResponse)}
               >

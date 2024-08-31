@@ -21,14 +21,16 @@ export async function GET(
 
     const grantId = userDetails.grantId;
 
+    console.log("GrantId:", grantId);
+
     const queryParams: ListMessagesQueryParams = {
       in: ["INBOX"],
       limit: 5,
     }
-    const pageToken = request.nextUrl.searchParams.get("pageToken");
+    const search = request.nextUrl.searchParams.get("search");
 
-    if (pageToken && pageToken.length > 0) {
-      queryParams.pageToken = pageToken;
+    if (search && search.length > 0) {
+      queryParams.searchQueryNative = search;
     }
 
     const messages = await nylas.messages.list({

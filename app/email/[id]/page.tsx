@@ -310,7 +310,12 @@ export default async function EmailDisplay({
                   {aiResponse
                     ?.split("\n")
                     .map((line: string, index: number) => (
-                      <p key={index}>{line}</p>
+                      <p
+                        key={index}
+                        className="whitespace-pre-wrap break-words"
+                      >
+                        {line}
+                      </p>
                     ))}
                 </div>
               </div>
