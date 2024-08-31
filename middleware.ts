@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get('mailtales_user_token');
 
   // List of paths that should be protected
-  const protectedPaths = ['/dashboard', '/api/email'];
+  const protectedPaths = ['/dashboard', '/email'];
 
   // Check if the requested path is in the protectedPaths
   const isProtectedPath = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path));

@@ -42,7 +42,7 @@ export default function EmailList() {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      next: { revalidate: 60 }, // Cache revalidation
+      next: { revalidate: 60 * 60 },
     })
       .then((res) => res?.json())
       .then((data) => {
@@ -72,7 +72,6 @@ export default function EmailList() {
           <div>
             {/* loop over data and display it */}
             {data?.map((item: any, index: number) => (
-
               <EmailCard key={index} email={item} />
             ))}
             {loadingLoadMore ? (

@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOut, Menu, X } from "lucide-react";
-
+import Image from "next/image";
 export const Navbar = () => {
   const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
@@ -71,9 +71,18 @@ export const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0">
-              <span className="text-2xl font-bold text-primary">MailTales</span>
+              <div className="flex items-center">
+                <Image
+                  src="/logo.png"
+                  alt="MailTales Logo"
+                  width={200}
+                  height={200}
+                  className="mr-2"
+                />
+                {/* <span className="text-xl font-bold text-primary">MailTales</span> */}
+              </div>
             </Link>
-            <div className="hidden md:block ml-10 flex items-baseline space-x-4">
+            <div className="hidden md:block ml-6 flex items-baseline space-x-4">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
