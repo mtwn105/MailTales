@@ -6,8 +6,6 @@ import { eq } from 'drizzle-orm';
 import { db } from "@/lib/db";
 import { findRelevantEmails } from "@/lib/email";
 import { getGoogleResponse } from "@/lib/ai";
-import { convertToCoreMessages, tool } from "ai";
-import { z } from "zod";
 
 export const maxDuration = 60;
 
