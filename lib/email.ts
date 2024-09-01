@@ -2,7 +2,7 @@ import Nylas, { type ListMessagesQueryParams } from "nylas";
 import { generateEmbedding, generateEmbeddings } from "@/lib/ai";
 import { db } from "@/lib/db";
 import * as schema from '@/drizzle/schema';
-import { cosineDistance, eq, gt, desc, sql } from 'drizzle-orm';
+import { cosineDistance, eq, gt, desc, sql, and } from 'drizzle-orm';
 
 const nylas = new Nylas({
   apiKey: process.env.NYLAS_API_KEY!,
@@ -93,7 +93,7 @@ export async function generateEmailEmbedding(user: any) {
 }
 
 
-export const findRelevantEmails = async (userQuery: string) => {
+export const findRelevantEmails = async (userQuery: string, userId: number) => {
 
   console.log("Finding relevant emails for query", userQuery);
 
@@ -110,7 +110,7 @@ export const findRelevantEmails = async (userQuery: string) => {
   const similarEmails = await db
     .select({ snippet: schema.emailEmbeddings.snippet, subject: schema.emailEmbeddings.subject, date: schema.emailEmbeddings.date, from: schema.emailEmbeddings.from, to: schema.emailEmbeddings.to, similarity })
     .from(schema.emailEmbeddings)
-    .where(gt(similarity, 0.5))
+    .where(and(gt(similarity, 0.5), eq(schema.emailEmbeddings.userId, userId)))
     .orderBy(t => desc(t.similarity))
     .limit(4);
 

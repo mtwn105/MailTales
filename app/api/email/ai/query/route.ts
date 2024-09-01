@@ -34,7 +34,7 @@ export async function POST(
 
     const query = messages[messages.length - 1].content;
 
-    const relevantEmails = await findRelevantEmails(query);
+    const relevantEmails = await findRelevantEmails(query, user.id);
 
     console.log("Relevant Emails", relevantEmails);
 
