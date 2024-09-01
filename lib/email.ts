@@ -34,11 +34,11 @@ export async function generateEmailEmbedding(user: any) {
 
     [user] = await db.update(schema.user).set({ embeddingGenerationStatus: "in_progress" }).where(eq(schema.user.id, user.id)).returning();
 
-    // Get first 100 emails by 10 in loop
+    // Get first 30 emails by 15 in loop
     let emails = [];
     let pageToken = null;
-    for (let i = 0; i < 10; i++) {
-      const emailPage = await getEmails(user?.grantId, 10, pageToken);
+    for (let i = 0; i < 2; i++) {
+      const emailPage = await getEmails(user?.grantId, 15, pageToken);
       emails.push(...emailPage.data);
       pageToken = emailPage.nextCursor;
     }
@@ -75,6 +75,9 @@ export async function generateEmailEmbedding(user: any) {
       to: e.to! as string,
       embedding: embedding[index].map((e) => e) as number[],
     }));
+
+    // delete all existing email embeddings for this user
+    await db.delete(schema.emailEmbeddings).where(eq(schema.emailEmbeddings.userId, user.id));
 
     await db.insert(schema.emailEmbeddings).values(emailsWithEmbeddings);
 

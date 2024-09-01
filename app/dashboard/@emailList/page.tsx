@@ -6,20 +6,26 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LoadingSpinner } from "@/components/ui/spinner";
-import { Loader2 } from "lucide-react";
+import { Loader2, SearchIcon } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function EmailList() {
+  const router = useRouter();
+
   const [data, setData] = useState<any>(null);
   const [searchedData, setSearchedData] = useState<any>(null);
   const [search, setSearch] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingLoadMore, setLoadingLoadMore] = useState<boolean>(false);
   const [pageToken, setPageToken] = useState<string>("");
+  const [emailAiStatus, setEmailAiStatus] = useState<string>("");
 
   useEffect(() => {
     fetchEmails();
+    getEmailAiStatus();
   }, []);
 
   const fetchEmails = async () => {
@@ -85,7 +91,26 @@ export default function EmailList() {
     }
   };
 
-  const chatWithEmails = async (search: string) => {
+  const getEmailAiStatus = async () => {
+    try {
+      const response = await fetch(`/api/email/ai/status`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        cache: "no-store",
+      });
+      const data = await response.json();
+      setEmailAiStatus(data?.status);
+    } catch (error) {
+      console.error("Error refreshing emails:", error);
+    } finally {
+      // setLoading(false);
+    }
+  };
+
+  const refreshEmailEmbeddings = async () => {
     try {
       const response = await fetch(`/api/email/ai/refresh`, {
         method: "GET",
@@ -96,13 +121,18 @@ export default function EmailList() {
         cache: "no-store",
       });
       const data = await response.json();
-      console.log("Data", data);
+      console.log(data);
     } catch (error) {
       console.error("Error refreshing emails:", error);
     } finally {
-      // setLoading(false);
+      setEmailAiStatus("in_progress");
     }
   };
+
+  const goToChat = () => {
+    router.push("/chat");
+  };
+
   return (
     <main>
       <p className="text-2xl sm:text-4xl font-bold">Latest Emails</p>
@@ -118,16 +148,52 @@ export default function EmailList() {
           {loading ? (
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
           ) : (
-            "Search"
+            <>
+              <SearchIcon className="w-4 h-4 mr-2" />
+              Search
+            </>
           )}
         </Button>
-        <Button onClick={() => chatWithEmails(search)}>
+        {/* <Button onClick={() => chatWithEmails(search)}>
           {loading ? (
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
           ) : (
             "Chat with emails"
           )}
-        </Button>
+        </Button> */}
+      </div>
+      <div>
+        {emailAiStatus === "in_progress" ? (
+          <Alert className="border-yellow-500 bg-yellow-100">
+            {/* <AlertTitle>Heads up!</AlertTitle> */}
+            <AlertDescription>
+              AI is processing your emails. Please wait.
+            </AlertDescription>
+          </Alert>
+        ) : emailAiStatus === "completed" ? (
+          <Alert className="border-green-500 bg-green-100">
+            {/* <AlertTitle>Heads up!</AlertTitle> */}
+            <AlertDescription>
+              <div className="flex flex-col sm:flex-row gap-2 justify-between items-center">
+                <p className="text-center sm:text-left mb-2 sm:mb-0 font-bold">
+                  AI has processed your emails. You can now chat with them.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                  <Button onClick={goToChat} className="w-full sm:w-auto">
+                    Chat with emails
+                  </Button>
+                  <Button
+                    onClick={() => refreshEmailEmbeddings()}
+                    variant="outline"
+                    className="w-full sm:w-auto"
+                  >
+                    Refresh Email Data
+                  </Button>
+                </div>
+              </div>
+            </AlertDescription>
+          </Alert>
+        ) : null}
       </div>
       <div className="w-full mx-auto ">
         {loading ? (

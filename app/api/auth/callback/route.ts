@@ -83,6 +83,8 @@ export async function GET(request: Request & NextRequest) {
   const token = signToken({
     id: user.id,
     email,
+    name: user.name,
+    picture: user.picture,
   });
 
   cookieStore.set("mailtales_user_token", token);

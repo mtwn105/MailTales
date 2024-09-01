@@ -4,6 +4,7 @@ import * as schema from '@/drizzle/schema';
 import { eq } from 'drizzle-orm';
 
 import { db } from "@/lib/db";
+import { generateEmailEmbedding } from "@/lib/email";
 
 export async function GET(
   request: Request & NextRequest,
@@ -22,8 +23,10 @@ export async function GET(
       );
     }
 
+    generateEmailEmbedding(user);
+
     return NextResponse.json({
-      status: user?.embeddingGenerationStatus,
+      message: "Email embedding generation started",
     });
 
   } catch (error) {
