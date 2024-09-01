@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 import { usePathname, useRouter } from "next/navigation";
 
-import { User } from "@/models/User";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -18,11 +17,14 @@ import { LogOut, Menu, X } from "lucide-react";
 import Image from "next/image";
 export const Navbar = () => {
   const pathname = usePathname();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<any>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navItems = [
-    { name: "Home", href: "/" },
-    { name: "Dashboard", href: "/dashboard" },
+    { name: "Home", href: "/", forLoggedIn: false },
+    { name: "Dashboard", href: "/dashboard", forLoggedIn: true },
+    { name: "Chat", href: "/chat", forLoggedIn: true },
+    { name: "About", href: "/about", forLoggedIn: false },
+    { name: "About", href: "/about", forLoggedIn: true },
   ];
 
   const router = useRouter();
@@ -83,19 +85,37 @@ export const Navbar = () => {
               </div>
             </Link>
             <div className="hidden md:block ml-6 flex items-baseline space-x-4">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`px-3 py-2 rounded-md text-sm font-medium ${
-                    pathname === item.href
-                      ? "bg-primary text-primary-foreground"
-                      : "text-foreground hover:bg-accent hover:text-accent-foreground"
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
+              {user
+                ? navItems
+                    .filter((item) => item.forLoggedIn)
+                    .map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className={`px-3 py-2 rounded-md text-sm font-medium ${
+                          pathname === item.href
+                            ? "bg-primary text-primary-foreground"
+                            : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                        }`}
+                      >
+                        {item.name}
+                      </Link>
+                    ))
+                : navItems
+                    .filter((item) => !item.forLoggedIn)
+                    .map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className={`px-3 py-2 rounded-md text-sm font-medium ${
+                          pathname === item.href
+                            ? "bg-primary text-primary-foreground"
+                            : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                        }`}
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
             </div>
           </div>
           <div className="hidden md:block">
@@ -103,11 +123,16 @@ export const Navbar = () => {
               {user && (
                 <>
                   <span className="text-sm font-medium text-foreground mr-2">
-                    {user?.name}
+                    {user?.name ? user?.name : user?.email}
                   </span>
                   <Avatar>
-                    <AvatarImage src={user?.picture} alt={user?.name} />
-                    <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
+                    <AvatarImage
+                      src={user?.picture}
+                      alt={user?.name ? user?.name : user?.email}
+                    />
+                    <AvatarFallback>
+                      {user?.name?.charAt(0) || user?.email?.charAt(0)}
+                    </AvatarFallback>
                   </Avatar>
                   <Button
                     onClick={handleLogout}
@@ -135,24 +160,48 @@ export const Navbar = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                {navItems.map((item) => (
-                  <DropdownMenuItem key={item.name} asChild>
-                    <Link
-                      href={item.href}
-                      className={pathname === item.href ? "bg-accent" : ""}
-                    >
-                      {item.name}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
+                {user
+                  ? navItems
+                      .filter((item) => item.forLoggedIn)
+                      .map((item) => (
+                        <DropdownMenuItem key={item.name} asChild>
+                          <Link
+                            href={item.href}
+                            className={
+                              pathname === item.href ? "bg-accent" : ""
+                            }
+                          >
+                            {item.name}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))
+                  : navItems
+                      .filter((item) => !item.forLoggedIn)
+                      .map((item) => (
+                        <DropdownMenuItem key={item.name} asChild>
+                          <Link
+                            href={item.href}
+                            className={
+                              pathname === item.href ? "bg-accent" : ""
+                            }
+                          >
+                            {item.name}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
                 {user && (
                   <>
                     <DropdownMenuItem className="flex items-center">
                       <Avatar className="h-8 w-8 mr-2">
-                        <AvatarImage src={user?.picture} alt={user?.name} />
-                        <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
+                        <AvatarImage
+                          src={user?.picture}
+                          alt={user?.name ? user?.name : user?.email}
+                        />
+                        <AvatarFallback>
+                          {user?.name?.charAt(0) || user?.email?.charAt(0)}
+                        </AvatarFallback>
                       </Avatar>
-                      <span>{user?.name}</span>
+                      <span>{user?.name ? user?.name : user?.email}</span>
                     </DropdownMenuItem>
 
                     <DropdownMenuItem onClick={handleLogout}>

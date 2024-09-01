@@ -1,15 +1,6 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import Nylas, { type ListMessagesQueryParams } from "nylas";
-
-import connectToDatabase from "@/lib/db";
-import { verifyToken } from "@/lib/jwt";
-import User from "@/models/User";
-
-const nylas = new Nylas({
-  apiKey: process.env.NYLAS_API_KEY!,
-  apiUri: process.env.NYLAS_API_URI!,
-});
+import { getEmails } from "@/lib/email";
 
 export async function GET(
   request: Request & NextRequest,
@@ -21,20 +12,9 @@ export async function GET(
 
     const grantId = userDetails.grantId;
 
-    const queryParams: ListMessagesQueryParams = {
-      in: ["INBOX"],
-      limit: 5,
-    }
     const pageToken = request.nextUrl.searchParams.get("pageToken");
 
-    if (pageToken && pageToken.length > 0) {
-      queryParams.pageToken = pageToken;
-    }
-
-    const messages = await nylas.messages.list({
-      identifier: grantId!,
-      queryParams,
-    });
+    const messages = await getEmails(grantId, 5, pageToken);
 
     const response = messages.data.map((message) => {
       return {
@@ -46,13 +26,13 @@ export async function GET(
       }
     })
 
-    // console.log("Recent Messages:", messages);
-
     return NextResponse.json({
       data: response,
       nextCursor: messages.nextCursor,
     });
+
   } catch (error) {
+
     console.error("Error fetching emails:", error);
 
     return NextResponse.json(
