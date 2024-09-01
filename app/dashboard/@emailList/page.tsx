@@ -85,6 +85,24 @@ export default function EmailList() {
     }
   };
 
+  const chatWithEmails = async (search: string) => {
+    try {
+      const response = await fetch(`/api/email/ai/refresh`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        cache: "no-store",
+      });
+      const data = await response.json();
+      console.log("Data", data);
+    } catch (error) {
+      console.error("Error refreshing emails:", error);
+    } finally {
+      // setLoading(false);
+    }
+  };
   return (
     <main>
       <p className="text-2xl sm:text-4xl font-bold">Latest Emails</p>
@@ -101,6 +119,13 @@ export default function EmailList() {
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
           ) : (
             "Search"
+          )}
+        </Button>
+        <Button onClick={() => chatWithEmails(search)}>
+          {loading ? (
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          ) : (
+            "Chat with emails"
           )}
         </Button>
       </div>

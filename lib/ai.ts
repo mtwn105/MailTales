@@ -1,6 +1,6 @@
 
 import { google } from '@ai-sdk/google';
-import { generateObject, streamText } from 'ai';
+import { embedMany, generateObject, streamText } from 'ai';
 
 
 export async function getGoogleResponse(body: any) {
@@ -41,5 +41,14 @@ export async function getGoogleResponseObject(body: any, schema: any, temperatur
   });
 
   return result;
+}
+
+export async function generateEmbeddings(emailStrings: string[]) {
+  const { embeddings } = await embedMany({
+    model: google.embedding('text-embedding-004'),
+    values: emailStrings,
+  });
+
+  return embeddings;
 }
 

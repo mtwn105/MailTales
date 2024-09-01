@@ -1,9 +1,9 @@
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import * as schema from '@/drizzle/schema';
+import { eq } from 'drizzle-orm';
 
-import connectToDatabase from "@/lib/db";
+import { db } from "@/lib/db";
 import { verifyToken } from "@/lib/jwt";
-import User from "@/models/User";
 
 
 export async function POST(
@@ -21,9 +21,7 @@ export async function POST(
       return new NextResponse(null, { status: 401 });
     }
 
-    // Fetch user from database
-    await connectToDatabase();
-    const user = await User.findById(decoded.id);
+    const [user] = await db.select().from(schema.user).where(eq(schema.user.email, decoded.email))
 
     console.log("User:", user);
 
