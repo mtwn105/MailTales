@@ -1,11 +1,9 @@
 "use client";
 
-import { BackgroundBeams } from "@/components/ui/background-beams";
-import { Button } from "@/components/ui/button";
 import { GoogleSignUpButton } from "@/components/ui/google-button";
-import { HeroHighlight, Highlight } from "@/components/ui/hero-highlight";
+import { HeroHighlight } from "@/components/ui/hero-highlight";
 import { motion } from "framer-motion";
-
+import Image from "next/image";
 // import React, { useState } from "react";
 export default function SignUp() {
   // const [name, setName] = useState("");
@@ -54,11 +52,34 @@ export default function SignUp() {
             duration: 0.5,
             ease: [0.4, 0.0, 0.2, 1],
           }}
+          className="text-3xl px-4  lg:text-5xl font-bold  max-w-3xl leading-relaxed lg:leading-snug text-center mx-auto "
+        >
+          Get Started with
+        </motion.h1>
+        <motion.h1
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          animate={{
+            opacity: 1,
+            y: [20, -5, 0],
+          }}
+          transition={{
+            duration: 0.5,
+            ease: [0.4, 0.0, 0.2, 1],
+          }}
           className="text-4xl px-4  lg:text-6xl font-bold  max-w-4xl leading-relaxed lg:leading-snug text-center mx-auto "
         >
-          Get Started with MailTales
+          <Image
+            src="/logo.png"
+            alt="MailTales"
+            width={400}
+            height={300}
+            className="inline-block"
+          />
         </motion.h1>
-        <div className="mt-6">
+        <div className="mt-2">
           <GoogleSignUpButton onClick={authStart} />
         </div>
       </HeroHighlight>
