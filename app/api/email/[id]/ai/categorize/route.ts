@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import Nylas from "nylas";
 
-import { getGoogleResponse, getGoogleResponseObject } from "@/lib/ai";
+import { getGoogleResponseObject } from "@/lib/ai";
 import { z } from "zod";
 
 const nylas = new Nylas({
