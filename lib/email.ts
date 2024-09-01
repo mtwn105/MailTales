@@ -1,8 +1,8 @@
 import Nylas, { type ListMessagesQueryParams } from "nylas";
-import { generateEmbeddings } from "@/lib/ai";
+import { generateEmbedding, generateEmbeddings } from "@/lib/ai";
 import { db } from "@/lib/db";
 import * as schema from '@/drizzle/schema';
-import { eq } from 'drizzle-orm';
+import { cosineDistance, eq, gt, desc, sql } from 'drizzle-orm';
 
 const nylas = new Nylas({
   apiKey: process.env.NYLAS_API_KEY!,
@@ -53,11 +53,12 @@ export async function generateEmailEmbedding(user: any) {
       to: e.to?.[0]?.email,
     }));
 
-    const emailStrings = emails.map((e) => `Subject: ${e.subject}
-  From: ${e.from}
-  To: ${e.to}
-  Snippet: ${e.snippet}
-  Date: ${e.date}`);
+    const emailStrings = emails.map((e) => `Email
+    Subject: ${e.subject}
+    From: ${e.from}
+    To: ${e.to}
+    Snippet: ${e.snippet}
+    Date: ${new Date(e.date! * 1000).toLocaleDateString() + " " + new Date(e.date! * 1000).toLocaleTimeString()}`);
 
     // console.log("Email Strings", emailStrings);
 
@@ -70,7 +71,7 @@ export async function generateEmailEmbedding(user: any) {
       emailId: e.emailId! as string,
       subject: e.subject! as string,
       snippet: e.snippet! as string,
-      date: new Date(e.date!) as Date,
+      date: new Date(e.date! * 1000) as Date,
       from: e.from! as string,
       to: e.to! as string,
       embedding: embedding[index].map((e) => e) as number[],
@@ -90,3 +91,30 @@ export async function generateEmailEmbedding(user: any) {
   }
 
 }
+
+
+export const findRelevantEmails = async (userQuery: string) => {
+
+  console.log("Finding relevant emails for query", userQuery);
+
+  const userQueryEmbedded = await generateEmbedding(userQuery);
+
+  console.log("User query embedded", userQueryEmbedded);
+  const similarity = sql<number>`1 - (${cosineDistance(
+    schema.emailEmbeddings.embedding,
+    userQueryEmbedded,
+  )})`;
+
+
+  console.log("Similarity", similarity);
+  const similarEmails = await db
+    .select({ snippet: schema.emailEmbeddings.snippet, subject: schema.emailEmbeddings.subject, date: schema.emailEmbeddings.date, from: schema.emailEmbeddings.from, to: schema.emailEmbeddings.to, similarity })
+    .from(schema.emailEmbeddings)
+    .where(gt(similarity, 0.5))
+    .orderBy(t => desc(t.similarity))
+    .limit(4);
+
+
+  console.log("Similar Emails", similarEmails);
+  return similarEmails;
+};

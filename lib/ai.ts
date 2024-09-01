@@ -1,13 +1,15 @@
 
 import { google } from '@ai-sdk/google';
-import { embedMany, generateObject, streamText } from 'ai';
+import { embed, embedMany, generateObject, streamText } from 'ai';
 
 
-export async function getGoogleResponse(body: any) {
+export async function getGoogleResponse(body: any, system: string = "", tools: any = null) {
   const result = await streamText({
     model: google('gemini-1.5-flash'),
+    system,
     messages: body,
     temperature: 0.0001,
+    tools,
   });
 
   return result;
@@ -52,3 +54,12 @@ export async function generateEmbeddings(emailStrings: string[]) {
   return embeddings;
 }
 
+
+export const generateEmbedding = async (value: string): Promise<number[]> => {
+  const input = value.replaceAll('\\n', ' ');
+  const { embedding } = await embed({
+    model: google.embedding('text-embedding-004'),
+    value: input,
+  });
+  return embedding;
+};
