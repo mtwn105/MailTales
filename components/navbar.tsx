@@ -107,7 +107,7 @@ export const Navbar = () => {
                   </span>
                   <Avatar>
                     <AvatarImage src={user?.picture} alt={user?.name} />
-                    <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
+                    <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <Button
                     onClick={handleLogout}
@@ -150,7 +150,7 @@ export const Navbar = () => {
                     <DropdownMenuItem className="flex items-center">
                       <Avatar className="h-8 w-8 mr-2">
                         <AvatarImage src={user?.picture} alt={user?.name} />
-                        <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
+                        <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
                       </Avatar>
                       <span>{user?.name}</span>
                     </DropdownMenuItem>

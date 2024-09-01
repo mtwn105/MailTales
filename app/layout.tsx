@@ -7,6 +7,7 @@ import { fontSans } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: {
@@ -33,6 +34,11 @@ export default function RootLayout({
 }) {
   return (
     <html suppressHydrationWarning lang="en">
+      <Script
+        async
+        src="https://p01--umami--fyers-api-bot--oql9-vlwk.code.run/script.js"
+        data-website-id="f79b589e-599e-4be4-b6b3-bf3a601a3194"
+      />
       <head />
       <body
         className={cn(
