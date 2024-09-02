@@ -18,6 +18,21 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+  openGraph: {
+    images: [
+      {
+        url: "/thumbnail.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/thumbnail.png"],
+  },
+  keywords: ["email", "ai", "gmail", "outlook", "yahoo", "hotmail"],
+  category: "productivity",
 };
 
 export const viewport: Viewport = {

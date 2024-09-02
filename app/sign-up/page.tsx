@@ -4,7 +4,13 @@ import { GoogleSignUpButton } from "@/components/ui/google-button";
 import { HeroHighlight } from "@/components/ui/hero-highlight";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { Metadata } from "next";
 // import React, { useState } from "react";
+
+const metadata: Metadata = {
+  title: "Sign Up",
+};
+
 export default function SignUp() {
   // const [name, setName] = useState("");
 

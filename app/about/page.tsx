@@ -1,3 +1,9 @@
+import { Metadata } from "next";
+
+const metadata: Metadata = {
+  title: "About",
+};
+
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background p-8">

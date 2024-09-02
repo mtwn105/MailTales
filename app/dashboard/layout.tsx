@@ -1,8 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dashboard - MailTales",
-  description: "Your email dashboard",
+  title: "Dashboard",
 };
 
 export default function DashboardLayout({
@@ -16,6 +15,6 @@ export default function DashboardLayout({
     <main>
       {children}
       {emailList}
-   </main>
+    </main>
   );
 }

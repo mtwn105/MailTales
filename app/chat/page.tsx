@@ -9,6 +9,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useState, useEffect, useRef } from "react";
 import { useChat } from "ai/react";
 import Typing from "@/components/ui/typing";
+import { Metadata } from "next";
+
+const metadata: Metadata = {
+  title: "Chat",
+};
 
 export default function EmailList() {
   const [query, setQuery] = useState<string>("");
