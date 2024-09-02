@@ -41,7 +41,11 @@ Youtube - [https://youtu.be/zk88KqHMCR0](https://youtu.be/zk88KqHMCR0)
 ![
 ![mail-tales-architecture](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/djz8c5hbsmbhpu7l6qiu.png)](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/ps5xsiflumii7m7arvjq.png)
 
+
 **Nylas:** Nylas is used for authentication of user and fetching their emails from inbox
+
 **Gemini:** Gemini is used for generating AI responses as well as generating embeddings. Model used for generating responses is `gemini-1.5-flash` and for embeddings it is `text-embedding-004`
+
 **Postgres:** Postgres is used to store user and emails data. `@vercel/postgres` is used for this.
+
 **Upstash Kafka:** Upstash Kafka is used for the job of generating email embeddings. Generating email embeddings is done by a NodeJS Backend by consuming messages from Upstash Kafka topic.
