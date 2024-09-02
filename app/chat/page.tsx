@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { RefreshCcwIcon, SendHorizonalIcon } from "lucide-react";
+import { Loader2, RefreshCcwIcon, SendHorizonalIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { useState, useEffect, useRef } from "react";
@@ -29,6 +29,7 @@ export default function EmailList() {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [emailAiStatus, setEmailAiStatus] = useState<string>("");
+  const [emailAiLoading, setEmailAiLoading] = useState<boolean>(false);
 
   useEffect(() => {
     getEmailAiStatus();
@@ -56,6 +57,7 @@ export default function EmailList() {
 
   const refreshEmailEmbeddings = async () => {
     try {
+      setEmailAiLoading(true);
       const response = await fetch(`/api/email/ai/refresh`, {
         method: "GET",
         headers: {
@@ -70,6 +72,7 @@ export default function EmailList() {
       console.error("Error refreshing emails:", error);
     } finally {
       setEmailAiStatus("in_progress");
+      setEmailAiLoading(false);
     }
   };
 
@@ -80,8 +83,12 @@ export default function EmailList() {
         <p className="text-sm text-gray-500 mt-4">
           Chat with your last 30 emails.
         </p>
-        <Button onClick={refreshEmailEmbeddings}>
-          <RefreshCcwIcon className="w-4 h-4 mr-2" />
+        <Button onClick={refreshEmailEmbeddings} disabled={emailAiLoading}>
+          {emailAiLoading ? (
+            <Loader2 className="w-4 h-4 mr-2" />
+          ) : (
+            <RefreshCcwIcon className="w-4 h-4 mr-2" />
+          )}
           Refresh Email Data
         </Button>
       </div>

@@ -23,7 +23,7 @@ export async function GET(
       );
     }
 
-    generateEmailEmbedding(user);
+    await generateEmailEmbedding(user);
 
     return NextResponse.json({
       message: "Email embedding generation started",

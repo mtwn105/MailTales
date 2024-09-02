@@ -1,0 +1,33 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --experimental-specifier-resolution=node --loader ts-node/esm index.ts",
+    "start": "node --experimental-specifier-resolution=node dist/index.js",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.5.2",
+    "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^0.0.46",
+    "@vercel/postgres": "^0.9.0",
+    "ai": "^3.3.21",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.33.0",
+    "express": "^4.19.2",
+    "kafkajs": "^2.2.4",
+    "nylas": "^7.5.2",
+    "pg": "^8.12.0"
+  }
+}

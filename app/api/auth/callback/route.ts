@@ -92,7 +92,7 @@ export async function GET(request: Request & NextRequest) {
   cookieStore.set("mailtales_user_details", JSON.stringify(user));
   console.log("Token set");
 
-  generateEmailEmbedding(user);
+  await generateEmailEmbedding(user);
 
   // Redirect to success page
 
