@@ -23,13 +23,38 @@ const kafka = new Kafka({
     password: `${process.env.UPSTASH_KAFKA_PASSWORD}`
   },
   logLevel: logLevel.ERROR,
+  retry: {
+    initialRetryTime: 100,
+    retries: 100,
+  }
 });
 
-const consumer = kafka.consumer({ groupId: 'consumer_group_1' });
+const consumer = kafka.consumer({
+  groupId: 'consumer_group_1', retry: {
+    initialRetryTime: 100,
+    retries: 100,
+  }
+});
 
 const run = async () => {
+
+  // This configuration will consume both pending and new messages
+  const admin = kafka.admin();
+  await admin.connect();
+  await admin.resetOffsets({
+    groupId: 'consumer_group_1',
+    topic: 'generate-email-embeddings',
+    earliest: true // Set to true to start from the earliest offset
+  });
+  await admin.disconnect();
+
   await consumer.connect();
   await consumer.subscribe({ topic: 'generate-email-embeddings', fromBeginning: true });
+
+
+  // Note: With this setup, the consumer will process all pending messages
+  // from the earliest available offset, as well as any new messages that
+  // arrive after it has started. This ensures no messages are missed.
 
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
